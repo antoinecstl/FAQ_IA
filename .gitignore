@@ -1,2 +1,2 @@
 //ignorer les .env
-.env
+.env*
