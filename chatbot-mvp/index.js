@@ -1,3 +1,4 @@
+// index.js
 const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
@@ -7,6 +8,22 @@ const port = process.env.PORT || 3000;
 
 // Middleware pour parser le JSON
 app.use(express.json());
+
+// Middleware de vérification de clé API
+app.use((req, res, next) => {
+    if (req.path === '/') {
+        return next(); // Autoriser la route de base sans clé API
+    }
+
+    const apiKey = req.headers['x-api-key'];
+    const validApiKey = process.env.API_KEY; // Ajoutez API_KEY dans .env
+
+    if (!apiKey || apiKey !== validApiKey) {
+        return res.status(401).json({ error: 'Clé API invalide ou manquante.' });
+    }
+
+    next();
+});
 
 // Route de base pour vérifier le fonctionnement
 app.get('/', (req, res) => {
