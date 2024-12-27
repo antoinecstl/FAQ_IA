@@ -1,11 +1,17 @@
 import os
+import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import openai
 from typing import Optional
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 # Récupérer la clé OpenAI depuis la variable d'environnement
 openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    logging.error("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
 
 app = FastAPI()
 
@@ -37,4 +43,5 @@ async def chat_endpoint(chat_request: ChatRequest):
         return ChatResponse(response=generated_text)
 
     except openai.error.OpenAIError as e:
+        logging.error(f"OpenAI API error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur OpenAI: {str(e)}")

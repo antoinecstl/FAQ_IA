@@ -23,8 +23,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      # Vous devez lier vos certificats si vous les avez localement
+      # Vous devez lier vos certificats auto-signés
       - ./nginx/ssl:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
     depends_on:
       - backend
     networks:
