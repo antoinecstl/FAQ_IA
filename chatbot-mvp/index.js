@@ -9,29 +9,23 @@ const port = process.env.PORT || 3000;
 // Middleware pour parser le JSON
 app.use(express.json());
 
-// Middleware de vérification de clé API
-app.use((req, res, next) => {
-    if (req.path === '/') {
-        return next(); // Autoriser la route de base sans clé API
-    }
+// Importer les routes
+const clientRoutes = require('./routes/clients');
+const protectedRoutes = require('./routes/protected');
 
-    const apiKey = req.headers['x-api-key'];
-    const validApiKey = process.env.API_KEY; // Ajoutez API_KEY dans .env
-
-    if (!apiKey || apiKey !== validApiKey) {
-        return res.status(401).json({ error: 'Clé API invalide ou manquante.' });
-    }
-
-    next();
-});
+// Utiliser les routes
+app.use('/api/clients', clientRoutes);
+app.use('/api', protectedRoutes);
 
 // Route de base pour vérifier le fonctionnement
 app.get('/', (req, res) => {
-    res.send('Chatbot MVP est en cours d\'exécution.');
+    res.send('Catalysia is UP !.');
 });
 
 // Route pour gérer les requêtes du chatbot
-app.post('/chat', async (req, res) => {
+const authenticate = require('./middleware/authenticate');
+
+app.post('/api/chat', authenticate, async (req, res) => {
     const userMessage = req.body.message;
 
     if (!userMessage) {
@@ -40,7 +34,7 @@ app.post('/chat', async (req, res) => {
 
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-4o-mini',
+            model: 'gpt-4', // Correction du modèle
             messages: [{ role: 'user', content: userMessage }],
             max_tokens: 1500,
             temperature: 0.7,
