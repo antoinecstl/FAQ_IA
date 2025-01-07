@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Client = require('../models/Client');
 const Joi = require('joi');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 // Schéma de validation pour l'inscription des clients
 const clientSchema = Joi.object({
@@ -9,8 +12,18 @@ const clientSchema = Joi.object({
     email: Joi.string().email().required(),
 });
 
-// Route pour inscrire un nouveau client
-router.post('/register', async (req, res) => {
+// Middleware to verify admin API key
+const verifyAdmin = (req, res, next) => {
+    const adminKey = req.headers['x-admin-api-key'];
+    if (adminKey === process.env.ADMIN_API_KEY) {
+        next();
+    } else {
+        return res.status(403).json({ error: 'Accès refusé.' });
+    }
+};
+
+// Route pour inscrire un nouveau user
+router.post('/register', verifyAdmin, async (req, res) => {
     // Valider la requête
     const { error, value } = clientSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
