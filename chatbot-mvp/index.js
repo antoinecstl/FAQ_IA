@@ -1,7 +1,7 @@
 // index.js
 const express = require('express');
 const axios = require('axios');
-const { ApiKey } = require('../models');
+const ApiKey = require('../models/ApiKey');
 require('dotenv').config();
 
 const app = express();
