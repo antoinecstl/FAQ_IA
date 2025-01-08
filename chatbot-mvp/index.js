@@ -2,6 +2,7 @@
 const express = require('express');
 const axios = require('axios');
 const ApiKey = require('./models/ApiKey');
+const cors = require('cors'); // Import CORS
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +10,13 @@ const port = process.env.PORT || 3000;
 
 // Middleware pour parser le JSON
 app.use(express.json());
+
+// Configure CORS globally
+app.use(cors({
+    origin: 'http://localhost:3000', // Replace with your frontend URL
+    methods: ['GET', 'POST', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'x-admin-api-key', 'x-api-key']
+}));
 
 // Importer les routes
 const clientRoutes = require('./routes/clients');
