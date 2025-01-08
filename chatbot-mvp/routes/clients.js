@@ -3,9 +3,17 @@ const router = express.Router();
 const Client = require('../models/Client');
 const Joi = require('joi');
 const dotenv = require('dotenv');
-const ApiKey = require('../models/ApiKey'); // Ajouter cette ligne pour importer le modèle ApiKey
+const ApiKey = require('../models/ApiKey');
+const cors = require('cors'); // Import CORS
 
 dotenv.config();
+
+// Add CORS middleware
+router.use(cors({
+    origin: 'http://localhost:3000', // Replace with your frontend URL
+    methods: ['GET', 'POST', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'x-admin-api-key']
+}));
 
 // Schéma de validation pour l'inscription des clients
 const clientSchema = Joi.object({
