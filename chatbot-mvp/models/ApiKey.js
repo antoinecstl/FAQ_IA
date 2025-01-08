@@ -33,6 +33,16 @@ class ApiKey {
         const result = await db.query(query, values);
         return result.rows[0];
     }
+
+    static async increment(key) {
+        const query = `
+            UPDATE api_keys
+            SET total_calls = total_calls + 1
+            WHERE key = $1
+        `;
+        const values = [key];
+        await db.query(query, values);
+    }
 }
 
 module.exports = ApiKey;

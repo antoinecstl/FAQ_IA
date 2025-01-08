@@ -65,6 +65,16 @@ class Client {
         const values = [id];
         await db.query(query, values);
     }
+
+    static async getAllUsersInfo() {
+        const query = `
+            SELECT clients.id, clients.name, clients.email, api_keys.key, api_keys.created_at, api_keys.revoked
+            FROM clients
+            LEFT JOIN api_keys ON clients.id = api_keys.client_id
+        `;
+        const result = await db.query(query);
+        return result.rows;
+    }
 }
 
 module.exports = Client;

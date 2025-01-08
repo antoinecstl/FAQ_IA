@@ -64,6 +64,17 @@ router.post('/revoke', authenticate, async (req, res) => {
     }
 });
 
+// Route pour récupérer la liste des utilisateurs et leurs clés API
+router.get('/users', verifyAdmin, async (req, res) => {
+    try {
+        const users = await Client.getAllUsersInfo();
+        res.json(users);
+    } catch (err) {
+        console.error('Erreur lors de la récupération des utilisateurs :', err);
+        res.status(500).json({ error: 'Erreur interne du serveur.' });
+    }
+});
+
 // Route pour supprimer un client et ses clés
 router.delete('/:id', verifyAdmin, async (req, res) => {
     const clientId = req.params.id;

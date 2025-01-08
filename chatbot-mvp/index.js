@@ -1,6 +1,7 @@
 // index.js
 const express = require('express');
 const axios = require('axios');
+const { ApiKey } = require('../models');
 require('dotenv').config();
 
 const app = express();
@@ -33,6 +34,9 @@ app.post('/api/chat', authenticate, async (req, res) => {
     }
 
     try {
+        // Incrémenter le compteur total_calls en utilisant l'API key
+        await ApiKey.increment(req.client.key);
+
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: 'gpt-4o-mini', 
             messages: [{ role: 'user', content: userMessage }],
