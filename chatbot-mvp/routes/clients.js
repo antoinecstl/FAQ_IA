@@ -3,6 +3,7 @@ const router = express.Router();
 const Client = require('../models/Client');
 const Joi = require('joi');
 const dotenv = require('dotenv');
+const ApiKey = require('../models/ApiKey'); // Ajouter cette ligne pour importer le modèle ApiKey
 
 dotenv.config();
 
@@ -46,7 +47,7 @@ router.post('/register', verifyAdmin, async (req, res) => {
     }
 });
 
-// Route pour révoquer une API key
+// Route pour révoquer une API key et en générer une nouvelle
 const authenticate = require('../middleware/authenticate');
 
 router.post('/revoke', authenticate, async (req, res) => {
@@ -54,9 +55,24 @@ router.post('/revoke', authenticate, async (req, res) => {
 
     try {
         await Client.revokeApiKey(apiKey);
-        res.json({ message: 'Clé API révoquée avec succès.' });
+        // Générer une nouvelle clé API
+        const newApiKey = await ApiKey.generate(req.client.id);
+        res.json({ message: 'Clé API révoquée et une nouvelle clé a été générée.', apiKey: newApiKey.key });
     } catch (err) {
         console.error('Erreur lors de la révocation de la clé API :', err);
+        res.status(500).json({ error: 'Erreur interne du serveur.' });
+    }
+});
+
+// Route pour supprimer un client et ses clés
+router.delete('/:id', verifyAdmin, async (req, res) => {
+    const clientId = req.params.id;
+
+    try {
+        await Client.delete(clientId);
+        res.json({ message: 'Client et toutes ses clés ont été supprimés avec succès.' });
+    } catch (err) {
+        console.error('Erreur lors de la suppression du client :', err);
         res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 });

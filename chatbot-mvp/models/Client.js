@@ -56,6 +56,15 @@ class Client {
         const values = [apiKey];
         await db.query(query, values);
     }
+
+    static async delete(id) {
+        const query = `
+            DELETE FROM clients
+            WHERE id = $1
+        `;
+        const values = [id];
+        await db.query(query, values);
+    }
 }
 
 module.exports = Client;
