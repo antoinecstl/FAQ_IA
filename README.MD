@@ -1,22 +1,6 @@
 Chatbot MVP Deployment Guide
 
 Bienvenue dans le guide de déploiement de votre Chatbot MVP ! Ce document récapitule toutes les étapes nécessaires pour créer, dockeriser, déployer et sécuriser votre chatbot intelligent utilisant l'API OpenAI sur une VM Google Cloud Platform (GCP).
-Table des Matières
-
-    Prérequis
-    Configuration de l'Environnement Local
-    Développement de l'Application Backend
-    Dockerisation de l'Application
-    Déploiement sur une VM GCP
-    Configuration de Nginx et HTTPS
-    Test de l'Application avec Postman
-    Surveillance et Gestion des Logs
-    Intégration avec Plugins WordPress et Shopify (Optionnel)
-    Automatisation du Déploiement (Optionnel)
-    Bonnes Pratiques et Améliorations Futures
-    Conclusion
-
-Prérequis
 
 Avant de commencer, assurez-vous d'avoir les éléments suivants :
 
